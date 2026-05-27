@@ -1,11 +1,6 @@
-/**
- * API Service Layer
- * Connects to FastAPI backend with ISO 13374 endpoints
- */
-
 import axios from 'axios';
 
-const BASE_URL = '/api/v1';
+const BASE_URL = 'https://iso-13374-based-predictive-maintainance.onrender.com/api/v1';
 
 const api = axios.create({
   baseURL: BASE_URL,
