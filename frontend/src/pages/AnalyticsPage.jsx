@@ -5,36 +5,87 @@ import {
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   Cell, Legend, RadarChart, Radar, PolarGrid, PolarAngleAxis
 } from 'recharts';
-import { RefreshCw, Brain, Cpu, GitBranch, TrendingDown } from 'lucide-react';
+import { RefreshCw, Brain, Cpu, GitBranch, TrendingDown, AlertTriangle } from 'lucide-react';
 import { getAnalyticsSummary, getModelMetrics } from '../services/api';
 
 export default function AnalyticsPage() {
   const [analytics, setAnalytics] = useState(null);
   const [metrics, setMetrics] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [showWakeUpNotice, setShowWakeUpNotice] = useState(false);
+
+  const fetch = async () => {
+    setLoading(true);
+    setError(null);
+    setShowWakeUpNotice(false);
+
+    const timer = setTimeout(() => {
+      setShowWakeUpNotice(true);
+    }, 4000);
+
+    try {
+      const [anaRes, metRes] = await Promise.all([
+        getAnalyticsSummary(),
+        getModelMetrics()
+      ]);
+      setAnalytics(anaRes.data);
+      setMetrics(metRes.data);
+    } catch (err) {
+      console.error(err);
+      setError(err);
+    } finally {
+      clearTimeout(timer);
+      setShowWakeUpNotice(false);
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetch = async () => {
-      try {
-        const [anaRes, metRes] = await Promise.all([
-          getAnalyticsSummary(),
-          getModelMetrics()
-        ]);
-        setAnalytics(anaRes.data);
-        setMetrics(metRes.data);
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetch();
   }, []);
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-full">
-        <RefreshCw size={32} className="text-sky-500 animate-spin" />
+      <div className="flex items-center justify-center h-full min-h-[400px]">
+        <div className="text-center space-y-4">
+          <RefreshCw size={36} className="text-sky-500 animate-spin mx-auto" />
+          <div className="text-slate-400 font-medium">Loading analytics data...</div>
+          {showWakeUpNotice && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-xs text-amber-500 max-w-sm mx-auto bg-amber-500/10 border border-amber-500/20 px-4 py-2 rounded-lg"
+            >
+              Note: The backend is hosted on a free-tier instance and may take up to a minute to wake up from sleep. Please stand by.
+            </motion.div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center h-full min-h-[400px] p-6">
+        <div className="text-center max-w-md bg-slate-900 border border-red-500/30 p-8 rounded-2xl shadow-xl space-y-6">
+          <div className="w-16 h-16 bg-red-500/10 border border-red-500/30 rounded-full flex items-center justify-center mx-auto">
+            <AlertTriangle size={32} className="text-red-500" />
+          </div>
+          <div className="space-y-2">
+            <h2 className="text-lg font-bold text-white">Connection Timeout / Error</h2>
+            <p className="text-sm text-slate-400">
+              Unable to load analytics details. The predictive maintenance service might be starting up or currently offline.
+            </p>
+            <p className="text-xs text-slate-500 font-mono bg-slate-950 p-2 rounded border border-slate-800 break-words">
+              {error.message || String(error)}
+            </p>
+          </div>
+          <button onClick={fetch} className="btn-secondary w-full justify-center gap-2 py-2.5 bg-red-500/10 hover:bg-red-500/20 text-red-200 border-red-500/30">
+            <RefreshCw size={14} />
+            Try Again
+          </button>
+        </div>
       </div>
     );
   }

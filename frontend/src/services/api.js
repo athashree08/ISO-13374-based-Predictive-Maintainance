@@ -1,10 +1,25 @@
 import axios from 'axios';
 
-const BASE_URL = 'https://iso-13374-based-predictive-maintainance.onrender.com/api/v1';
+const getBaseUrl = () => {
+  if (import.meta.env.VITE_API_URL) {
+    return import.meta.env.VITE_API_URL;
+  }
+  
+  // If running locally (even in production preview/build), default to local backend
+  const isLocalhost = window.location.hostname === 'localhost' || 
+                      window.location.hostname === '127.0.0.1';
+  if (isLocalhost) {
+    return 'http://localhost:8000/api/v1';
+  }
+  
+  return 'https://iso-13374-based-predictive-maintainance.onrender.com/api/v1';
+};
+
+const BASE_URL = getBaseUrl();
 
 const api = axios.create({
   baseURL: BASE_URL,
-  timeout: 30000,
+  timeout: 90000,
   headers: {
     'Content-Type': 'application/json',
   },
