@@ -2,6 +2,8 @@
 
 ### ISO 13374-Based Predictive Maintenance & Remaining Useful Life Prediction
 
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Visit%20RULVision-0e75b6?style=for-the-badge)](https://iso-13374-based-predictive-maintainance-hogkgw65e.vercel.app/)
+
 RULVision is an end-to-end predictive maintenance system designed to estimate the **Remaining Useful Life (RUL)** of industrial engines from multivariate sensor data.
 
 The project uses the **NASA C-MAPSS FD001 turbofan engine dataset** and combines deep learning and gradient-boosted trees to model engine degradation. The system also incorporates **SHAP-based explainability** and follows the six-layer architecture defined by **ISO 13374** for condition monitoring and diagnostics.
