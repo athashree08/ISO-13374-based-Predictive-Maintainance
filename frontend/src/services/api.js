@@ -1,15 +1,19 @@
 import axios from 'axios';
 
 const getBaseUrl = () => {
-  if (import.meta.env.VITE_API_URL) {
-    return import.meta.env.VITE_API_URL;
-  }
-  
-  // If running locally (even in production preview/build), default to local backend
   const isLocalhost = window.location.hostname === 'localhost' || 
                       window.location.hostname === '127.0.0.1';
+                      
+  const envUrl = import.meta.env.VITE_API_URL;
+
   if (isLocalhost) {
-    return 'http://localhost:8000/api/v1';
+    return envUrl || 'http://localhost:8000/api/v1';
+  }
+  
+  // In production (Vercel), if env URL is a valid absolute URL, use it.
+  // Otherwise, default to the production Render backend to avoid 404s on relative paths.
+  if (envUrl && envUrl.startsWith('http')) {
+    return envUrl;
   }
   
   return 'https://iso-13374-based-predictive-maintainance.onrender.com/api/v1';

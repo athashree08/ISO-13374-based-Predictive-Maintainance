@@ -1,6 +1,10 @@
 {
   "rewrites": [
     {
+      "source": "/api/v1/(.*)",
+      "destination": "https://iso-13374-based-predictive-maintainance.onrender.com/api/v1/$1"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
