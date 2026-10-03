@@ -2,7 +2,7 @@
 
 ### ISO 13374-Based Predictive Maintenance & Remaining Useful Life Prediction
 
-[🌐 Live Demo](https://iso-13374-based-predictive-maintainance-fngtud2gc.vercel.app/)
+[🌐 Live Demo](https://iso-13374-based-predictive-maintain.vercel.app/)
 
 RULVision is an end-to-end predictive maintenance system designed to estimate the **Remaining Useful Life (RUL)** of industrial engines from multivariate sensor data.
 
